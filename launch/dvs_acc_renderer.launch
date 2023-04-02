@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node pkg="dvs_acc_renderer" type="node" name="dvs_acc_renderer_node" respawn="false" output="screen">
+        <param name="config_file" value="$(find dvs_acc_renderer)/config/renderer.yaml"/>
+    </node>
+
+</launch>

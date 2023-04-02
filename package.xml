@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>dvs_acc_renderer</name>
+  <version>0.1.0</version>
+  <description>The dvs_acc_renderer package</description>
+
+  <maintainer email="2713168429@qq.com">LauZanMo</maintainer>
+  <license>GPLv3</license>
+  <author email="2713168429@qq.com">LauZanMo</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>dvs_msgs</build_depend>
+  <build_depend>image_transport</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_export_depend>cv_bridge</build_export_depend>
+  <build_export_depend>dvs_msgs</build_export_depend>
+  <build_export_depend>image_transport</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>sensor_msgs</build_export_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>dvs_msgs</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+
+</package>
