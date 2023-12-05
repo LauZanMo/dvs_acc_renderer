@@ -1,6 +1,5 @@
 #include "dvs_acc_renderer.h"
 
-#include <tbb/parallel_for.h>
 #include <yaml-cpp/yaml.h>
 
 namespace dvs_acc_renderer {
@@ -42,38 +41,27 @@ void Renderer::eventsCallback(const dvs_msgs::EventArray::ConstPtr &msg) {
         if (cv_image_.image.rows != static_cast<int>(msg->height) ||
             cv_image_.image.cols != static_cast<int>(msg->width)) {
             cv_image_.image = cv::Mat(msg->height, msg->width, CV_8UC3, cv::Scalar(0, 0, 0));
-            pol_mat_.resize(msg->height * msg->width, false);
-            time_mat_.resize(msg->height * msg->width, 0.0);
         } else {
             cv_image_.image.setTo(cv::Scalar(0, 0, 0));
-            pol_mat_.assign(pol_mat_.size(), false);
-            time_mat_.assign(time_mat_.size(), 0.0);
         }
 
         ros::Time t0 = ros::Time::now();
 
-        // 并行嵌入事件
-        tbb::parallel_for(tbb::blocked_range<size_t>(0, msg->events.size()), [&](const tbb::blocked_range<size_t> &r) {
-            for (auto i = r.begin(); i != r.end(); i++) {
-                const int x   = msg->events[i].x;
-                const int y   = msg->events[i].y;
-                const int idx = y * msg->width + x;
-                compareAndSet(msg->events[i].ts.toSec(), msg->events[i].polarity, time_mat_[idx], pol_mat_[idx]);
-            }
-        });
+        // 顺序遍历嵌入事件
+        for (auto &e : msg->events) {
+            // 若事件在图像范围内，则绘制
+            uchar *pixel = cv_image_.image.ptr(e.y, e.x);
+            // 如果所在像素值不为黑色，则不绘制
 
-        // 生成图像
-        tbb::parallel_for(tbb::blocked_range<size_t>(0, msg->height), [&](const tbb::blocked_range<size_t> &r) {
-            for (auto i = r.begin(); i != r.end(); i++) {
-                for (size_t j = 0; j < msg->width; j++) {
-                    const int idx = i * msg->width + j;
-                    if (time_mat_[idx] > 0.0) {
-                        cv_image_.image.at<cv::Vec3b>(cv::Point(j, i)) =
-                            (pol_mat_[idx] ? cv::Vec3b(255, 0, 0) : cv::Vec3b(0, 0, 255));
-                    }
-                }
+            // 绘制
+            if (e.polarity) {
+                pixel[0] = 255;
+                pixel[2] = 0;
+            } else {
+                pixel[2] = 255;
+                pixel[0] = 0;
             }
-        });
+        }
 
         ros::Duration dt = ros::Time::now() - t0;
         if (pub_render_cost_)
@@ -81,13 +69,6 @@ void Renderer::eventsCallback(const dvs_msgs::EventArray::ConstPtr &msg) {
 
         // 发布图像
         image_pub_.publish(cv_image_.toImageMsg());
-    }
-}
-
-void Renderer::compareAndSet(const double &t, const bool &p, double &t_mat, bool &p_mat) {
-    if (t > t_mat) {
-        t_mat = t;
-        p_mat = p;
     }
 }
 

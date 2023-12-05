@@ -28,10 +28,6 @@ set(OpenCV_DIR "/usr/local/opencv4.5.5/lib/cmake/opencv4/")
 find_package(OpenCV REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 
-# TBB
-find_package(TBB REQUIRED)
-target_link_libraries(${PROJECT_NAME} TBB::tbb)
-
 # ROS
 set(cv_bridge_DIR "/usr/local/cv_bridge4.5.5/share/cv_bridge/cmake/")
 find_package(catkin REQUIRED COMPONENTS
