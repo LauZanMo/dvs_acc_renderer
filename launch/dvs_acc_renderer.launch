@@ -5,4 +5,9 @@
         <param name="config_file" value="$(find dvs_acc_renderer)/config/renderer.yaml"/>
     </node>
 
+    <!-- display -->
+    <node name="image_view_left" pkg="rqt_image_view" type="rqt_image_view">
+  	    <remap from="image" to="/dvs/rendered_image"/>
+    </node>
+
 </launch>
