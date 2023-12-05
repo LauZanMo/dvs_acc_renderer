@@ -2,3 +2,4 @@ events_topic: "/dvs/events"
 image_topic: "/dvs/rendered_image"
 
 pub_render_cost: false
+step: 4

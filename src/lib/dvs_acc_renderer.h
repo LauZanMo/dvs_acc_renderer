@@ -25,6 +25,7 @@ private:
     cv_bridge::CvImage cv_image_;
 
     bool pub_render_cost_;
+    size_t step_;
 };
 
 } // namespace dvs_acc_renderer

@@ -20,6 +20,7 @@ Renderer::Renderer(const std::string &config_file)
     auto events_topic = config["events_topic"].as<std::string>();
     auto image_topic  = config["image_topic"].as<std::string>();
     pub_render_cost_  = config["pub_render_cost"].as<bool>();
+    step_             = config["step"].as<size_t>();
 
     // 初始化
     image_transport::ImageTransport it(nh_);
@@ -48,8 +49,9 @@ void Renderer::eventsCallback(const dvs_msgs::EventArray::ConstPtr &msg) {
         ros::Time t0 = ros::Time::now();
 
         // 顺序遍历嵌入事件
-        for (auto &e : msg->events) {
+        for (size_t k = 0; k < msg->events.size(); k += step_) {
             // 若事件在图像范围内，则绘制
+            auto &e      = msg->events[k];
             uchar *pixel = cv_image_.image.ptr(e.y, e.x);
             // 如果所在像素值不为黑色，则不绘制
 
